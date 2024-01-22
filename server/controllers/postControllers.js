@@ -8,19 +8,21 @@ const createPost = async(req, res) => {
 	try {
     const { userId, description, title } = req.body;
   
-		const randomId = Math.floor(Math.random() * 10000000000) + 1;
+    const post = await Post.find();
 
-		console.log(randomId)
+    const currentId = post[post.length-1].id + 1;
+
+		// console.log(currentId)
 
     const newPost = new Post({
-			id: randomId,
+			id: currentId,
      	title,
-      description,
+      body: description,
+      userId: userId.toString()
     });
     await newPost.save();
 
-    const post = await Post.find();
-    res.status(201).json(post);
+    res.status(201).json(newPost);
   } catch (err) {
     res.status(409).json({ message: err.message });
   }
@@ -49,12 +51,13 @@ const deletePost = async(req, res) => {
 
 // Trae los posts por el nombre de usuario o por el titulo
 const getCommentByPostId = async(req, res) =>{  
-  const { name, title } = req.query;
+  const { name } = req.query;
 
-  console.log(title)
+  // console.log(name)
   try {
-    if (!name && !title) {
-      return res.status(400).json({ message: 'Por favor, proporciona un nombre de usuario o un título de algún post' });
+    if (!name) {
+      const post = await Post.find()
+      return res.status(200).json(post);
     }
 
     if (name) {
@@ -62,7 +65,14 @@ const getCommentByPostId = async(req, res) =>{
       const users = await User.find({ name: { $regex: new RegExp(name, 'i') } });
 
       if (users.length === 0) {
-        return res.status(404).json({ message: 'No se encontraron usuarios con ese nombre.' });
+        // return res.status(404).json({ message: 'No se encontraron usuarios con ese nombre.' });
+        const post = await Post.find({ title: { $regex: new RegExp(name, 'i') } })
+
+        if (!post) {
+          return res.status(404).json({ message: 'No se encontró ningún post con ese título ni con ese autor.' });
+        }
+  
+        return res.status(200).json(post);
       }
 
       // Obtener los IDs de los usuarios encontrados
@@ -71,18 +81,7 @@ const getCommentByPostId = async(req, res) =>{
       // Buscar posts cuya propiedad userId coincida con los IDs de los usuarios encontrados
       const posts = await Post.find({ userId: { $in: userIds } });
 
-      return res.status(200).json({ posts });
-    }
-
-    if (title) {
-      // Buscar un solo post por su título
-      const post = await Post.find({ title: { $regex: new RegExp(title, 'i') } })
-
-      if (!post) {
-        return res.status(404).json({ message: 'No se encontró ningún post con ese título.' });
-      }
-
-      return res.status(200).json({ post });
+      return res.status(200).json( posts );
     }
   } catch (err) {
     return res.status(500).json({ message: 'Error al obtener el usuario y sus posts', error: err.message });
@@ -127,8 +126,24 @@ const getPostById = async(req, res) => {
     if (!post) {
       return res.status(404).json({ message: 'Post no encontrado' });
     }
+    const user = await User.findOne({ id: post.userId });
 
-    res.status(200).json(post);
+    const image = await axios.get(`https://jsonplaceholder.typicode.com/photos/${postId}`)
+
+    const imageSelected = image.data
+
+    // console.log(imageSelected)
+
+    res.status(200).json(
+      {
+        id: postId,
+        title: post.title,
+        body: post.body,
+        user: user.name || '',
+        image: imageSelected.url || 'https://via.placeholder.com/600/24f355',
+        comments: post.comments
+      }
+    );
   } catch (err) {
     res.status(500).json({ message: 'Error al obtener el post', error: err.message });
   }
@@ -155,7 +170,7 @@ const getPosts = async(req, res) => {
 
 const modifyPost = async(req, res) => {
 	const postId = Number(req.params.id);
-  const { title, body } = req.body;
+  const { title, description } = req.body;
 
   try {
     // Buscar el post por su ID
@@ -168,7 +183,7 @@ const modifyPost = async(req, res) => {
 
     // Modificar los campos del post
     existingPost.title = title || existingPost.title;
-    existingPost.body = body || existingPost.body;
+    existingPost.body = description || existingPost.body;
 
     // Guardar los cambios en la base de datos
     await existingPost.save();

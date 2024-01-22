@@ -7,6 +7,7 @@ const {connectDB} = require('./config/db')
 const { getCommentByPostId} = require('./controllers/postControllers')
 /* eslint-enable no-alert, no-console */
 const postsRoutes = require('./routes/postsRoutes')
+const userRoutes = require('./routes/userRoutes')
 
 
 const app = express()
@@ -27,6 +28,7 @@ app.get('/' , (req, res) => {
 app.get('/comments', getCommentByPostId)
 
 app.use("/posts", postsRoutes)
+app.use("/user", userRoutes)
 
 const PORT = process.env.PORT || 5000
 
