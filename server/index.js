@@ -15,7 +15,7 @@ dotenv.config()
 connectDB()
 
 app.use(cors({
-	origin: "https://news-app.wilmerdev.com/",
+	origin: "https://news-app.wilmerdev.com",
 	credentials: true
 }))
 
