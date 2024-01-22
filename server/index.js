@@ -15,9 +15,12 @@ dotenv.config()
 connectDB()
 
 app.use(cors({
-	origin: "http://localhost:5173",
+	origin: "https://news-app.wilmerdev.com/",
 	credentials: true
 }))
+
+// Produccion: https://news-app.wilmerdev.com/
+// Desarrollo: http://localhost:5173/
 
 app.use(express.json())
 

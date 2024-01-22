@@ -4,6 +4,10 @@ import {useNavigate} from 'react-router-dom'
 import { UserState } from '../../context/userProvider';
 
 const Login = () => {
+
+  const ENDPOINT = 'https://news-app-production-7844.up.railway.app'
+  // local: http://localhost:5000
+
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -23,7 +27,7 @@ const Login = () => {
         };
   
         const { data } = await axios.post(
-          'http://localhost:5000/user/login',
+          `${ENDPOINT}/user/login`,
           { username: selectedUser },
           config
         );
@@ -43,7 +47,7 @@ const Login = () => {
 	useEffect(() => {
 		const getUsers = async () => {
 			try{
-				const response = await fetch('http://localhost:5000/user')
+				const response = await fetch(`${ENDPOINT}/user`)
 				const responseJson = await response.json()
 				setUsers(responseJson)
 				console.log(responseJson)

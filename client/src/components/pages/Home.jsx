@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import {UserState} from '../../context/userProvider';
 
 const Home = () => {
+
+  const ENDPOINT = 'https://news-app-production-7844.up.railway.app'
+  // local: http://localhost:5000
+
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchName, setSearchName] = useState('');
@@ -17,7 +21,7 @@ const Home = () => {
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/posts');
+      const response = await axios.get(`${ENDPOINT}/posts`)
       setPosts(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error.message);
@@ -36,7 +40,7 @@ const Home = () => {
   const handleSearch = async (name) => {
     console.log(name)
     try {
-      const response = await axios.get(`http://localhost:5000/comments?name=${name}`);
+      const response = await axios.get(`${ENDPOINT}/comments?name=${name}`);
       setPosts(response.data);
       console.log(response.data)
       setCurrentPage(1); // Resetear la paginación al realizar una nueva búsqueda

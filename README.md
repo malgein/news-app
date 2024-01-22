@@ -10,3 +10,5 @@ NOTA : en el entorno development este proyecto hace uso de una base de datos de 
 3-dirigirse a la carpeta frontend y despues de hacer npm install alli levantar el cliente con npm run dev
 
 Version de produccion :
+
+<h1 align="center"><b>Version de produccion : https://news-app.wilmerdev.com/</b><img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="35"></h1>

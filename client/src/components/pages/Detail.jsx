@@ -6,6 +6,9 @@ import { useNavigate } from 'react-router-dom'
 
 const Detail = () => {
 
+  const ENDPOINT = 'https://news-app-production-7844.up.railway.app'
+  // local: http://localhost:5000
+
   const {user} = UserState()
 
   const {id} = useParams()
@@ -36,7 +39,7 @@ const Detail = () => {
         return
       }
       try{
-        await axios.patch(`http://localhost:5000/posts/${id}`, {
+        await axios.patch(`${ENDPOINT}/posts/${id}`, {
           content: comment,
           userId: user.id,
           name: user.name
@@ -49,7 +52,7 @@ const Detail = () => {
   };
 
   const getPost = async () => {
-    const data = await fetch(`http://localhost:5000/posts/${id}`)
+    const data = await fetch(`${ENDPOINT}/posts/${id}`)
 
     const dataJson = await data.json()
     setPost(dataJson)
@@ -57,7 +60,7 @@ const Detail = () => {
 
   const handleEdit = async(e) => {
     e.preventDefault()
-    const response = await axios.put(`http://localhost:5000/posts/${id}`, {
+    const response = await axios.put(`${ENDPOINT}/posts/${id}`, {
         title,
         description,
       });
@@ -76,7 +79,7 @@ const Detail = () => {
 
     if (isConfirmed) {
       // Lógica para eliminar (puedes realizar la acción que necesites aquí)
-      const response = await axios.delete(`http://localhost:5000/posts/${id}`, {});
+      const response = await axios.delete(`${ENDPOINT}/posts/${id}`, {});
       // console.log(response.data)
       navigate('/')
       alert('El post ha sido eliminado');

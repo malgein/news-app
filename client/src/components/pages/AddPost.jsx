@@ -1,11 +1,12 @@
 import  { useState } from 'react';
 import axios from 'axios';
 import {UserState} from '../../context/userProvider'
-import { useNavigate } from 'react-router-dom';
+
 
 const AddPost = () => {
 
-  const navigate = useNavigate();
+  const ENDPOINT = 'https://news-app-production-7844.up.railway.app'
+  // local: http://localhost:5000
 
   const {user} = UserState()
 
@@ -17,14 +18,14 @@ const AddPost = () => {
     e.preventDefault();
 
     if(!user){
-      console.log('debes estar logeado para poder crear posts') 
+      alert('debes estar logeado para poder crear posts') 
       return
     } 
 
     try {
       // Realizar la llamada al endpoint para crear un nuevo post
       setUserId(user.id)
-      const response = await axios.post('http://localhost:5000/posts', {
+      const response = await axios.post(`${ENDPOINT}/posts`, {
         title,
         description,
         userId
